@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vesper — Identity Designer, Lisbon</title>
+<meta name="description" content="Vesper, identity designer based in Lisbon. Identity systems for restaurants, publishers and independent labels.">
+<link rel="stylesheet" href="lib/lenis.css">
+<style>
+  @font-face { font-family: "Inter"; src: url(fonts/inter-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Inter"; src: url(fonts/inter-latin-500-normal.woff2) format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Inter"; src: url(fonts/inter-latin-600-normal.woff2) format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Inter Tight"; src: url(fonts/inter-tight-latin-500-normal.woff2) format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+  @font-face { font-family: "IBM Plex Mono"; src: url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --accent: #EEF06B;
+    --warm: #F2EFE6;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-roll: cubic-bezier(.7, 0, .2, 1);
+    --pad: 32px;
+    --fs: clamp(64px, 17vw, 440px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  html.is-loading, html.is-loading body { overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; }
+  ::selection { background: var(--accent); color: #000; }
+
+  /* ---------- Preloader ---------- */
+  .preloader {
+    position: fixed; inset: 0; z-index: 90;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    will-change: transform;
+  }
+  .pl-group { width: min(400px, calc(100vw - 48px)); }
+  .pl-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; font-weight: 500; letter-spacing: .02em; text-transform: uppercase;
+    line-height: 1;
+  }
+  .pl-count { font-variant-numeric: tabular-nums; }
+  .pl-track {
+    position: relative; height: 1px; margin-top: 12px;
+    background: rgba(255,255,255,.15); overflow: hidden;
+  }
+  .pl-fill {
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: scaleX(0); transform-origin: 0 50%;
+  }
+
+  /* ---------- Grain ---------- */
+  .grain {
+    position: fixed; inset: -120px; z-index: 80;
+    pointer-events: none;
+    opacity: .2;
+    background-image: var(--grain, none);
+    background-size: 160px 160px;
+    animation: grain 1s steps(1, end) infinite;
+  }
+  @keyframes grain {
+    0%    { transform: translate3d(0, 0, 0); }
+    12.5% { transform: translate3d(-5px, 3px, 0); }
+    25%   { transform: translate3d(4px, -6px, 0); }
+    37.5% { transform: translate3d(-3px, 7px, 0); }
+    50%   { transform: translate3d(7px, 2px, 0); }
+    62.5% { transform: translate3d(-6px, -4px, 0); }
+    75%   { transform: translate3d(3px, 6px, 0); }
+    87.5% { transform: translate3d(-2px, -7px, 0); }
+    100%  { transform: translate3d(0, 0, 0); }
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 70;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 26px var(--pad);
+    font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: .01em;
+    line-height: 1.2;
+  }
+  .nav-brand { justify-self: start; }
+  .nav-mid { display: flex; gap: 44px; justify-self: center; }
+  .nav-right { justify-self: end; }
+
+  .roll-link {
+    position: relative; display: inline-flex; align-items: center;
+    white-space: nowrap; outline: none;
+  }
+  .roll { display: inline-flex; }
+  .ch {
+    position: relative; display: inline-block;
+    overflow: hidden; height: 1.2em; vertical-align: top;
+  }
+  .ch-in {
+    position: relative; display: block;
+    transition: transform .45s var(--ease-roll);
+    transition-delay: calc(var(--i, 0) * 25ms);
+  }
+  .ch-in::after {
+    content: attr(data-c);
+    position: absolute; left: 0; top: 100%;
+  }
+  .br {
+    position: absolute; top: 0; line-height: 1.2;
+    opacity: 0;
+    transition: opacity .45s var(--ease-roll), transform .45s var(--ease-roll);
+  }
+  .br-l { right: 100%; margin-right: 5px; transform: translateX(-6px); }
+  .br-r { left: 100%;  margin-left: 5px;  transform: translateX(6px); }
+  .roll-link:hover .ch-in,
+  .roll-link:focus-visible .ch-in { transform: translateY(-100%); }
+  .roll-link:hover .br,
+  .roll-link:focus-visible .br { opacity: 1; transform: translateX(0); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Hero / pin ---------- */
+  .scroll-wrap { position: relative; }
+  .pin {
+    position: sticky; top: 0;
+    height: 100vh; height: 100svh;
+    overflow: hidden;
+  }
+  .spacer { height: 4500px; }
+
+  .orbit { position: absolute; inset: 0; z-index: 1; }
+  .card {
+    position: absolute; left: 0; top: 0;
+    width: 270px; height: 202.5px;
+    transform-origin: 50% 50%;
+    will-change: transform;
+    cursor: pointer;
+  }
+  .media {
+    position: relative; width: 100%; height: 100%;
+    overflow: hidden; border-radius: 2px;
+    background: #141414;
+  }
+  .media-in {
+    position: absolute; inset: 0;
+    background: var(--ph, #1a1a1a);
+    transition: transform .6s var(--ease-out);
+  }
+  .media-in img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .card:hover .media-in { transform: scale(1.07); }
+
+  .word {
+    position: absolute; left: 50%; top: 50%; z-index: 2;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: var(--fs);
+    line-height: .85;
+    letter-spacing: 0;
+    color: var(--accent);
+    white-space: nowrap;
+    pointer-events: none;
+    display: flex;
+  }
+  /* each letter sits in its own vertical mask; negative margin = -0.04em tracking
+     without clipping glyph overhangs */
+  .m {
+    display: inline-block; overflow: hidden;
+    padding: 0 .05em; margin: 0 -.09em 0 -.05em;
+  }
+  .m:last-child { margin-right: -.05em; }
+  .l { display: block; will-change: transform; }
+
+  .para {
+    position: absolute; left: 50%; z-index: 2;
+    top: calc(50% + var(--fs) * .425 + 30px);
+    transform: translateX(-50%);
+    width: min(360px, calc(100vw - 48px));
+    margin: 0;
+    font-size: 15px; line-height: 1.45; font-weight: 400;
+    text-align: center; color: #fff;
+    pointer-events: none;
+  }
+
+  /* ---------- Bottom bar ---------- */
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: end;
+    padding: 0 var(--pad) 30px;
+    font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .02em;
+    line-height: 1.2;
+  }
+  .bar > :nth-child(1) { justify-self: start; }
+  .bar > :nth-child(2) { justify-self: center; }
+  .bar > :nth-child(3) { justify-self: end; }
+
+  /* ---------- Studies link ---------- */
+  .studies {
+    position: fixed; left: 10px; bottom: 7px; z-index: 100;
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; line-height: 1;
+    color: #fff; mix-blend-mode: difference;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    :root { --pad: 18px; --fs: 22vw; }
+    .nav { font-size: 12px; padding-top: 20px; padding-bottom: 20px; }
+    .nav-mid { gap: 20px; }
+    .bar { font-size: 10px; padding-bottom: 26px; letter-spacing: .01em; }
+    .para { font-size: 14px; top: calc(50% + var(--fs) * .425 + 22px); }
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .preloader { display: none; }
+    .grain { animation: none; }
+    .media-in, .ch-in, .br { transition-duration: .01ms; }
+  }
+</style>
+</head>
+<body>
+
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="pl-group" id="plGroup">
+    <div class="pl-row">
+      <span class="pl-brand">Vesper</span>
+      <span class="pl-count"><span id="plNum">0</span>%</span>
+    </div>
+    <div class="pl-track"><div class="pl-fill" id="plFill"></div></div>
+  </div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a class="nav-brand roll-link" href="#top" data-roll="Vesper">Vesper</a>
+  <nav class="nav-mid" aria-label="Primary">
+    <a class="roll-link" href="#works" data-roll="Works">Works</a>
+    <a class="roll-link" href="#about" data-roll="About">About</a>
+  </nav>
+  <a class="nav-right roll-link" href="mailto:studio@vesper-identity.pt" data-roll="Contact ↗">Contact ↗</a>
+</header>
+
+<main>
+  <section class="scroll-wrap" id="top">
+    <div class="pin" id="pin">
+      <div class="orbit" id="orbit">
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#7b6a55,#2f2924)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_3a570226-1ca0-44a5-be66-04e958ef2d26.png" alt="Hardcover books with colourful spines on a concrete shelf" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#c27a56,#6e3520)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063522_699468b6-904d-4804-a128-d97ebe64a08c.png" alt="Terracotta cosmetic packaging on travertine" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#e2d6c2,#c4513d)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_cfe6d001-ca98-4d8a-9354-a923588e2e90.png" alt="Risograph poster pasted on a city wall" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#6d7a52,#3b2c22)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_b0e0597b-49bd-4401-8187-2392dcf44050.png" alt="Round hanging shop sign against brick and trees" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#ebe4d4,#2c4bc4)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063549_611357e2-4862-410b-8143-94f7c5514ba1.png" alt="Stationery flat lay in cream and electric blue" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#3c6fd6,#e9c446)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063549_c8be252f-02f8-4f88-aece-3582f1030a74.png" alt="Blue and yellow product boxes against a blue sky" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#d0a336,#6f5212)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_2c063738-ef61-481b-a1d7-90a25ca546ad.png" alt="Phone showing an editorial app on mustard velvet" loading="eager" decoding="async"></div></div></figure>
+        <figure class="card" style="margin:0"><div class="media"><div class="media-in" style="--ph:linear-gradient(140deg,#cf6a2c,#5e2a10)"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_6122d96a-8220-4d49-a3ae-a6e70a9d83fd.png" alt="Burnt-orange aluminium object with bolts" loading="eager" decoding="async"></div></div></figure>
+      </div>
+
+      <h1 class="word" id="word" aria-label="Vesper">Vesper</h1>
+      <p class="para" id="para">Identity systems for restaurants, publishers and independent labels. Built to outlast the trend.</p>
+    </div>
+    <div class="spacer" aria-hidden="true"></div>
+  </section>
+</main>
+
+<footer class="bar" id="bar">
+  <span>Identity designer</span>
+  <span>Based in Lisbon</span>
+  <span>© 2026</span>
+</footer>
+
+
+<script src="lib/gsap.min.js"></script>
+<script src="lib/ScrollTrigger.min.js"></script>
+<script src="lib/lenis.min.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const root = document.documentElement;
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const ACCENT = "#EEF06B";
+  const WARM = "#F2EFE6";
+
+  /* ---------- Film grain (generated, no network) ---------- */
+  (function makeGrain() {
+    // one noise pixel per device pixel (fine grain on retina), sparse bright
+    // specks so the black stays deep under the 0.2 opacity layer
+    const size = Math.round(160 * Math.min(window.devicePixelRatio || 1, 2));
+    const c = document.createElement("canvas");
+    c.width = c.height = size;
+    const ctx = c.getContext("2d");
+    const img = ctx.createImageData(size, size);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const v = Math.pow(Math.random(), 3) * 255;
+      d[i] = d[i + 1] = d[i + 2] = v;
+      d[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    root.style.setProperty("--grain", `url(${c.toDataURL("image/png")})`);
+  })();
+
+  /* ---------- Hide broken images (fallback colour stays) ---------- */
+  document.querySelectorAll(".card img").forEach((img) => {
+    const hide = () => { img.style.visibility = "hidden"; };
+    if (img.complete && img.naturalWidth === 0 && img.currentSrc) hide();
+    img.addEventListener("error", hide);
+  });
+
+  /* ---------- Nav: letter roll + brackets ---------- */
+  document.querySelectorAll(".roll-link").forEach((a) => {
+    const label = a.dataset.roll || a.textContent.trim();
+    a.setAttribute("aria-label", label.replace("↗", "").trim());
+    a.textContent = "";
+    const bl = document.createElement("span");
+    bl.className = "br br-l"; bl.textContent = "["; bl.setAttribute("aria-hidden", "true");
+    const br = document.createElement("span");
+    br.className = "br br-r"; br.textContent = "]"; br.setAttribute("aria-hidden", "true");
+    const roll = document.createElement("span");
+    roll.className = "roll"; roll.setAttribute("aria-hidden", "true");
+    [...label].forEach((ch, i) => {
+      const c = ch === " " ? " " : ch;
+      const mask = document.createElement("span");
+      mask.className = "ch";
+      const inner = document.createElement("span");
+      inner.className = "ch-in";
+      inner.style.setProperty("--i", i);
+      inner.dataset.c = c;
+      inner.textContent = c;
+      mask.appendChild(inner);
+      roll.appendChild(mask);
+    });
+    a.append(bl, roll, br);
+  });
+
+  /* ---------- Hero word: split into masked letters ---------- */
+  const word = document.getElementById("word");
+  const letters = [];
+  {
+    const txt = word.textContent.trim().toUpperCase();
+    word.textContent = "";
+    [...txt].forEach((ch) => {
+      const m = document.createElement("span");
+      m.className = "m"; m.setAttribute("aria-hidden", "true");
+      const l = document.createElement("span");
+      l.className = "l"; l.textContent = ch;
+      m.appendChild(l);
+      word.appendChild(m);
+      letters.push(l);
+    });
+  }
+
+  const para = document.getElementById("para");
+  const nav = document.getElementById("nav");
+  const bar = document.getElementById("bar");
+  const preloader = document.getElementById("preloader");
+  const plGroup = document.getElementById("plGroup");
+  const plNum = document.getElementById("plNum");
+  const plFill = document.getElementById("plFill");
+  const pin = document.getElementById("pin");
+  const cards = [...document.querySelectorAll(".card")];
+
+  /* ---------- Lenis smooth scroll ---------- */
+  let lenis = null;
+  if (!reduce) {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    window.lenis = lenis;
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add((t) => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    lenis.stop();
+  }
+
+  // in-page links: no hard jumps
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (a.getAttribute("href") === "#top") {
+        lenis ? lenis.scrollTo(0, { duration: 1.6 }) : window.scrollTo(0, 0);
+      }
+    });
+  });
+
+  /* ---------- Orbit ---------- */
+  const N = cards.length;
+  const SCROLL_TO_X = 0.75;   // horizontal px per scrolled px
+  const DRIFT = 14;           // idle drift, px per second
+  const LERP = 0.08;
+  let vw, vh, cx, cy, baseW, baseH, spacing, span, amp;
+  let current = 0, drift = 0;
+  const intro = { off: 0 };
+
+  function measure() {
+    vw = window.innerWidth;
+    vh = pin.clientHeight || window.innerHeight;
+    cx = vw / 2;
+    cy = vh / 2;
+    baseW = Math.min(270, Math.max(150, vw * 0.1875));
+    baseH = baseW * 0.75;
+    span = Math.max(N * baseW * (290 / 270), vw + baseW * 2.2);
+    spacing = span / N;
+    amp = vh * (300 / 900);
+    cards.forEach((c) => { c.style.width = baseW + "px"; c.style.height = baseH + "px"; });
+  }
+
+  const wrap = (v, m) => ((v % m) + m) % m;
+
+  function layout() {
+    // bell normalised on half the viewport (720 px at 1440); floor keeps the
+    // swing readable on phones where vw/2 is tiny
+    const half = Math.max(vw / 2, 320);
+    for (let i = 0; i < N; i++) {
+      const x = wrap(i * spacing - current + span / 2, span) - span / 2 + cx;
+      const d = (x - cx) / half;
+      const b = Math.exp(-1.6 * d * d);
+      const dir = i % 2 ? -1 : 1;           // odd up, even down
+      const y = cy + dir * amp * b;
+      const s = 0.72 + 0.28 * b;
+      cards[i].style.transform =
+        `translate3d(${(x - baseW / 2).toFixed(2)}px, ${(y - baseH / 2).toFixed(2)}px, 0) scale(${s.toFixed(4)})`;
+    }
+  }
+
+  function targetX() { return window.scrollY * SCROLL_TO_X + drift + intro.off; }
+
+  function tick(time, deltaMs) {
+    const dt = Math.min((deltaMs || 16.7) / 1000, 0.1);
+    if (!reduce) drift += DRIFT * dt;
+    const k = reduce ? 1 : 1 - Math.pow(1 - LERP, dt * 60);
+    current += (targetX() - current) * k;
+    layout();
+  }
+
+  measure();
+  if (!reduce) intro.off = -Math.max(700, vw * 0.6);
+  current = targetX();
+  layout();
+  gsap.ticker.add(tick);
+
+  window.addEventListener("resize", () => { measure(); layout(); ScrollTrigger.refresh(); });
+
+  /* ---------- Word colour: accent -> warm white by mid-scroll ---------- */
+  gsap.fromTo(word, { color: ACCENT }, {
+    color: WARM, ease: "none",
+    scrollTrigger: {
+      start: 0,
+      end: () => ScrollTrigger.maxScroll(window) * 0.5,
+      scrub: true,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  /* ---------- Intro sequence ---------- */
+  if (reduce) {
+    preloader.remove();
+    root.classList.remove("is-loading");
+    return;
+  }
+
+  gsap.set(letters, { yPercent: 105 });
+  gsap.set(para, { opacity: 0, y: 24, filter: "blur(6px)" });
+  gsap.set(cards, { opacity: 0 });
+  gsap.set(bar, { yPercent: 100 });
+  gsap.set(nav, { yPercent: -100, opacity: 0 });
+
+  function heroIntro() {
+    const t = gsap.timeline();
+    t.to(letters, { yPercent: 0, duration: 1, ease: "expo.out", stagger: 0.06 }, 0)
+     .to(intro, { off: 0, duration: 2.6, ease: "expo.out" }, 0)
+     .to(cards, { opacity: 1, duration: 1.2, ease: "power2.out", stagger: 0.05 }, 0.1)
+     .to(para, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "power3.out", clearProps: "filter" }, 0.55)
+     .to(bar, { yPercent: 0, duration: 1.4, ease: "expo.out" }, 0.8)
+     .to(nav, { yPercent: 0, opacity: 1, duration: 1.4, ease: "expo.out" }, 0.8)
+     .add(() => {
+       root.classList.remove("is-loading");
+       lenis.start();
+     }, 0.9);
+    return t;
+  }
+
+  const counter = { v: 0 };
+  const start = () => {
+    const tl = gsap.timeline({ delay: 0.1 });
+    tl.to(counter, {
+        v: 100, duration: 1.5, ease: "power2.inOut",
+        onUpdate() {
+          plNum.textContent = Math.round(counter.v);
+          plFill.style.transform = `scaleX(${counter.v / 100})`;
+        },
+      })
+      .to(plGroup, { y: -24, opacity: 0, duration: 0.55, ease: "power3.in" }, "+=0.18")
+      .to(preloader, { yPercent: -100, duration: 1.0, ease: "expo.inOut" }, "-=0.2")
+      .add(heroIntro(), "-=0.5")
+      .add(() => preloader.remove());
+  };
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(start);
+})();
+</script>
+
+<!-- Switzer Int. top bar -->
+<style>
+@font-face{font-family:"SZ Tight";font-weight:500;src:url(fonts/inter-tight-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"SZ Mono";font-weight:400;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2")}
+.sz-bar{position:fixed;top:0;left:0;right:0;height:28px;z-index:2147483646;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#0E0E0E;color:#EDEAE3;border-bottom:1px solid #2A2A28;font:500 13px/1 "SZ Tight","Inter Tight","Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;mix-blend-mode:normal;pointer-events:auto}
+.sz-bar a{color:#8A8A85;text-decoration:none;font:400 11px/1 "SZ Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.sz-bar a:hover,.sz-bar a:focus-visible{color:#EDEAE3}
+.sz-bar span{text-transform:none !important;font:inherit !important;letter-spacing:inherit !important;color:#EDEAE3 !important}
+</style>
+<div class="sz-bar" role="banner"><span>Switzer Int.</span></div>
+<script>
+(function(){
+  var H = 28;
+  function shift(){
+    document.querySelectorAll('body *').forEach(function(el){
+      if (el.closest('.sz-bar') || el.dataset.szShifted) return;
+      var cs = getComputedStyle(el);
+      if (cs.position !== 'fixed') return;
+      var r = el.getBoundingClientRect();
+      if (r.height > 0 && r.height < 220 && r.top < H) {
+        var t = parseFloat(cs.top); if (isNaN(t)) t = 0;
+        el.style.top = (t + H) + 'px';
+        el.dataset.szShifted = '1';
+      }
+    });
+  }
+  if (document.readyState === 'complete') shift(); else window.addEventListener('load', shift);
+  setTimeout(shift, 1500); setTimeout(shift, 4000);
+})();
+</script>
+</body>
+</html>

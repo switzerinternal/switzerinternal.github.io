@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arlo Kade — Brand &amp; Web Designer, Copenhagen</title>
+<meta name="description" content="Arlo Kade, independent brand and web designer based in Copenhagen.">
+<link rel="stylesheet" href="lib/lenis.css">
+<script>
+  // Flag motion early so hidden start states never flash.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-anim');
+</script>
+<style>
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-300-normal.woff2) format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-500-normal.woff2) format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Inter Tight'; src: url(fonts/inter-tight-latin-300-normal.woff2) format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Inter Tight'; src: url(fonts/inter-tight-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Inter Tight'; src: url(fonts/inter-tight-latin-500-normal.woff2) format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Instrument Serif'; src: url(fonts/instrument-serif-latin-400-italic.woff2) format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Sofia Sans Extra Condensed'; src: url(fonts/sofia-sans-extra-condensed-latin-800-normal.woff2) format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Martian Mono'; src: url(fonts/martian-mono-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+
+:root {
+  --bg: #000;
+  --fg: #fff;
+  --grey: #8a8a8a;
+  --line: #262626;
+  --pad: 20px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.4; font-weight: 400;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; }
+ul { list-style: none; }
+::selection { background: #fff; color: #000; }
+
+/* ---------- shared type ---------- */
+.label { display: block; font-size: 14px; line-height: 1.3; text-transform: uppercase; color: var(--grey); letter-spacing: 0.01em; }
+.label--w { color: var(--fg); }
+.t32 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 2.23vw, 32px); line-height: 1.2; letter-spacing: -0.03em; }
+.t24 { font-family: var(--display); font-weight: 400; font-size: clamp(19px, 1.67vw, 24px); line-height: 1.32; letter-spacing: -0.02em; }
+.grey { color: var(--grey); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--pad); }
+
+/* image wrappers: fixed ratio + fallback colour (images are remote) */
+.ph { position: relative; overflow: hidden; background: radial-gradient(130% 90% at 28% 18%, color-mix(in srgb, var(--fb, #333) 72%, #fff 28%), var(--fb, #333) 62%); }
+.ph img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- letter roll ---------- */
+.roll { display: inline-flex; white-space: nowrap; vertical-align: top; }
+.roll .ch { display: inline-block; overflow: hidden; height: 1.25em; line-height: 1.25em; }
+.roll .ch > span { display: block; transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1); transition-delay: calc(var(--i) * 22ms); }
+.roll .ch > span::after { content: attr(data-c); display: block; }
+[data-roll]:hover .roll .ch > span,
+[data-roll]:focus-visible .roll .ch > span { transform: translateY(-50%); }
+
+/* ---------- nav ---------- */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 100;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 20px var(--pad);
+  font-size: 14px; color: #fff; mix-blend-mode: difference;
+}
+.nav-brand { font-weight: 500; justify-self: start; }
+.nav-links { display: flex; gap: 30px; }
+.nav-cta { justify-self: end; }
+
+/* ---------- hero (sticky, covered by works) ---------- */
+.cover { position: relative; }
+.hero {
+  position: sticky; top: 0; z-index: 0;
+  height: 100vh; overflow: hidden;
+  display: flex; align-items: center;
+  padding: 0 var(--pad);
+}
+.hero-inner { width: 100%; display: flex; flex-direction: column; align-items: flex-end; margin-top: 2vh; }
+.hero-word {
+  display: flex; white-space: nowrap;
+  font-family: var(--display); font-weight: 400;
+  font-size: 27vw; line-height: 0.8; letter-spacing: 0;
+}
+.hl { display: inline-block; overflow: hidden; padding: 0.06em 0.08em 0.03em; margin: -0.06em calc(-0.08em - 0.052em) -0.03em -0.08em; }
+.hl:last-child { margin-right: -0.1em; }
+.hl > span { display: inline-block; will-change: transform; }
+.hero-intro { width: 230px; margin-top: 30px; font-size: 14px; line-height: 1.45; }
+.hero-foot { position: absolute; left: var(--pad); bottom: 30px; font-size: 14px; }
+
+.js-anim .hl > span { transform: translateY(112%); }
+.js-anim .hero-intro, .js-anim .hero-foot, .js-anim .nav > * { opacity: 0; }
+
+/* ---------- works ---------- */
+.works { position: relative; z-index: 1; background: var(--bg); padding: 0 var(--pad) 10px; }
+.works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card { position: relative; display: flex; flex-direction: column; aspect-ratio: 4 / 3; color: #fff; }
+.card--full { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+.card-media { position: absolute; inset: 0; border-radius: 4px; }
+.card-zoom { position: absolute; inset: 0; transition: transform 1.2s var(--ease); }
+.card:hover .card-zoom { transform: scale(1.04); }
+.card-img { position: absolute; left: 0; top: -10%; width: 100%; height: 120% !important; object-fit: cover; will-change: transform; }
+.card-spacer { flex: 1 1 auto; }
+.card-cap {
+  position: sticky; bottom: 0; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;
+  padding: 40px 20px 18px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.22));
+  border-radius: 0 0 4px 4px;
+}
+.card-cap h3 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 2.23vw, 32px); line-height: 1; letter-spacing: -0.03em; }
+.card-cap p { font-size: 14px; line-height: 1.3; text-align: right; }
+
+/* ---------- about ---------- */
+section { position: relative; }
+.about { padding: 200px var(--pad) 180px; background: var(--bg); }
+.label-col .label + .label { margin-top: 2px; }
+.about-text .t32 { max-width: 690px; }
+.about-text .t24 { max-width: 640px; margin-top: 44px; }
+.about-media { position: relative; height: 50vw; margin-top: 140px; }
+.am { position: absolute; will-change: transform; }
+.am--portrait { left: 21%; top: 0; width: 30%; aspect-ratio: 3 / 4; --fb: #2c4170; }
+.am--square { right: 7%; top: 47%; width: 20%; aspect-ratio: 1 / 1; --fb: #c9c2ae; }
+.am figcaption { position: absolute; left: 0; bottom: -26px; font-size: 12px; color: var(--grey); text-transform: uppercase; }
+
+.exp { margin-top: 170px; }
+.exp-row {
+  display: grid; grid-template-columns: calc(50% - 10px) 1fr auto; column-gap: var(--pad);
+  padding: 19px 0; border-bottom: 1px solid var(--line);
+  font-size: 14px; text-transform: uppercase; letter-spacing: 0.01em;
+}
+.exp-row > :last-child { text-align: right; }
+.exp-head { font-size: 12px; color: var(--grey); padding: 0 0 14px; }
+
+/* ---------- capabilities ---------- */
+.caps { padding: 160px var(--pad) 200px; background: var(--bg); }
+.sticky-col { position: sticky; top: 110px; }
+.caps-lead { margin-top: 18px; max-width: 270px; color: var(--grey); font-size: 14px; line-height: 1.45; }
+.caps-img { width: 180px; height: 120px; margin-top: 36px; border-radius: 3px; --fb: #b0473a; }
+.svc + .svc { margin-top: 170px; }
+.svc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.svc-head h3 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 2.23vw, 32px); line-height: 1; letter-spacing: -0.03em; text-transform: uppercase; }
+.svc-head p { max-width: 250px; font-size: 14px; line-height: 1.45; color: var(--grey); }
+.svc-tags { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--pad); margin-top: 60px; border-bottom: 1px solid var(--line); }
+.svc-tags li { font-size: 12px; text-transform: uppercase; letter-spacing: 0.02em; padding: 15px 0; border-top: 1px solid var(--line); }
+
+/* ---------- testimonials ---------- */
+.testi { padding: 60px var(--pad) 200px; background: var(--bg); }
+.testi-lead { margin-top: 18px; max-width: 260px; color: var(--grey); line-height: 1.45; }
+.quote + .quote { margin-top: 130px; }
+.q-who { display: flex; align-items: center; gap: 12px; font-size: 12px; line-height: 1.35; }
+.q-who b { display: block; font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em; }
+.q-who span.role { display: block; color: var(--grey); text-transform: uppercase; letter-spacing: 0.02em; }
+.avatar { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #161616; border: 1px solid #2e2e2e; font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
+.quote blockquote { margin-top: 26px; max-width: 640px; font-family: var(--display); font-size: clamp(20px, 1.67vw, 24px); line-height: 1.32; letter-spacing: -0.02em; }
+
+/* ---------- clients ticker ---------- */
+.clients { padding: 40px 0 180px; background: var(--bg); overflow: clip; }
+.clients .label { text-align: center; }
+.ticker { margin-top: 60px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%); }
+.ticker-track { display: flex; width: max-content; animation: tick 30s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+.ticker-set { display: flex; align-items: center; }
+.logo { display: flex; align-items: center; gap: 10px; padding: 0 56px; height: 48px; font-size: 28px; line-height: 1; white-space: nowrap; color: #fff; }
+.logo svg { flex: none; }
+.lg-halden { font-weight: 600; letter-spacing: -0.045em; }
+.lg-nordlys { font-family: 'Sofia Sans Extra Condensed', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 0.1em; }
+.lg-ostra { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 34px; letter-spacing: -0.01em; }
+.lg-solvig { font-family: 'Martian Mono', monospace; font-size: 21px; letter-spacing: -0.02em; text-transform: lowercase; }
+.lg-terre { font-family: var(--display); font-weight: 300; font-size: 24px; letter-spacing: 0.42em; }
+.lg-field { font-weight: 500; letter-spacing: -0.03em; }
+@keyframes tick { to { transform: translate3d(-50%, 0, 0); } }
+
+/* ---------- full image ---------- */
+.fullimg { height: 70vh; min-height: 360px; overflow: hidden; --fb: #a37a22; }
+.fullimg-in { position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform; }
+.fullimg-in img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- awards ---------- */
+.awards { padding: 180px var(--pad) 200px; background: var(--bg); }
+.aw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 64px var(--pad); margin-top: 70px; }
+.aw { display: grid; grid-template-columns: 1fr auto; row-gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); }
+.aw-name, .aw-year { font-size: 12px; text-transform: uppercase; color: var(--grey); letter-spacing: 0.02em; }
+.aw-year { text-align: right; }
+.aw-tag { grid-column: 1 / -1; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 18px; }
+.aw-proj { grid-column: 1 / -1; font-family: var(--display); font-size: clamp(20px, 1.67vw, 24px); letter-spacing: -0.02em; line-height: 1.2; }
+
+/* ---------- values (white) ---------- */
+.values { background: #fff; color: #000; padding: 150px 0 190px; overflow: clip; }
+/* concave ring: camera sits just behind the cylinder axis, cards face inward,
+   only the front arc is drawn (size/perspective set in JS from the stage width) */
+.ring-stage { position: relative; height: 22vw; perspective: 430px; perspective-origin: 50% 50%; }
+.ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+.rcard {
+  position: absolute; width: 236px; height: 315px; left: -118px; top: -157.5px;
+  border-radius: 4px; backface-visibility: hidden; will-change: transform;
+}
+/* cards fade into the white page as they enter/leave the ends of the arc (stays opaque) */
+.rcard::after { content: ''; position: absolute; inset: 0; background: #fff; opacity: var(--fade, 0); pointer-events: none; }
+.values-text { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 90px; }
+.v-tiny { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+.v-line { display: block; width: 1px; height: 64px; background: #000; margin: 22px 0 34px; transform-origin: top; }
+.v-item { font-family: var(--display); font-size: clamp(26px, 2.23vw, 32px); line-height: 1.3; letter-spacing: -0.03em; }
+
+/* ---------- footer ---------- */
+.footer { background: var(--bg); padding: 150px 0 70px; overflow: clip; }
+.ft-ticker { overflow: hidden; }
+.ft-track { display: flex; width: max-content; will-change: transform; }
+.ft-set { display: flex; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: clamp(84px, 16.7vw, 240px); line-height: 1.02; letter-spacing: -0.05em; padding-bottom: 0.04em; }
+.ft-set span { padding-right: 0.22em; }
+.ft-links { display: grid; grid-template-columns: 1fr auto 1fr; margin-top: 110px; padding: 0 var(--pad); }
+.ft-div { width: 1px; background: rgba(255,255,255,0.5); min-height: 170px; transform-origin: top; }
+.ft-links ul { padding-left: 34px; display: flex; flex-direction: column; gap: 6px; }
+.ft-links li a { display: inline-flex; align-items: baseline; gap: 10px; font-family: var(--display); font-size: clamp(20px, 1.67vw, 24px); letter-spacing: -0.02em; line-height: 1.3; }
+.ft-links li a .arr { font-size: 0.7em; color: var(--grey); transition: transform 0.5s var(--ease), color 0.3s; }
+.ft-links li a:hover .arr { transform: translate(3px, -3px); color: #fff; }
+.ft-copy { margin-top: 110px; text-align: center; font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.02em; }
+
+/* reveal start states (GSAP takes over) */
+.js-anim [data-reveal], .js-anim [data-ri] { opacity: 0; }
+
+/* studies backlink */
+.studies-link { position: fixed; left: 10px; bottom: 8px; z-index: 2147483647; font: 400 11px/1 'IBM Plex Mono', ui-monospace, monospace; color: #fff; mix-blend-mode: difference; }
+
+/* ---------- mobile ---------- */
+@media (max-width: 809px) {
+  :root { --pad: 16px; }
+  .nav { grid-template-columns: auto 1fr auto; column-gap: 16px; padding: 16px var(--pad); font-size: 13px; }
+  .nav-links { gap: 14px; justify-self: center; }
+  .hero-word { font-size: 36vw; }
+  .hero-intro { width: 220px; margin-top: 22px; }
+  .works-grid { grid-template-columns: 1fr; }
+  .card--full { aspect-ratio: 4 / 3; }
+  .card-cap { padding: 32px 14px 14px; }
+  .card-cap h3 { font-size: 22px; }
+  .card-cap p { font-size: 12px; }
+  .grid2 { grid-template-columns: 1fr; }
+  .about { padding: 120px var(--pad) 120px; }
+  .about-text { margin-top: 28px; }
+  .about-media { height: 125vw; margin-top: 80px; }
+  .am--portrait { left: 0; width: 64%; }
+  .am--square { right: 0; top: 52%; width: 44%; }
+  .exp { margin-top: 110px; }
+  .exp-row { grid-template-columns: 1.2fr 1fr auto; font-size: 12px; }
+  .caps { padding: 110px var(--pad) 120px; }
+  .sticky-col { position: static; margin-bottom: 70px; }
+  .svc + .svc { margin-top: 100px; }
+  .svc-head { flex-direction: column; gap: 14px; }
+  .svc-tags { margin-top: 34px; }
+  .testi { padding: 20px var(--pad) 120px; }
+  .quote + .quote { margin-top: 80px; }
+  .clients { padding-bottom: 120px; }
+  .logo { padding: 0 32px; transform: scale(0.85); }
+  .awards { padding: 120px var(--pad); }
+  .aw-grid { grid-template-columns: 1fr; gap: 40px; margin-top: 44px; }
+  .values { padding: 100px 0 130px; }
+  .values-text { margin-top: 60px; }
+  .footer { padding-top: 110px; }
+  .ft-links { margin-top: 70px; }
+  .ft-links ul { padding-left: 22px; }
+  .ft-copy { margin-top: 80px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation-duration: 120s; }
+  .card-zoom, .roll .ch > span { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a href="#top" class="nav-brand" data-scroll>Arlo Kade</a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#top" data-roll data-scroll>Home</a>
+    <a href="#works" data-roll data-scroll>Works</a>
+    <a href="#about" data-roll data-scroll>About</a>
+  </nav>
+  <a href="#contact" class="nav-cta" data-roll data-scroll>Let's talk</a>
+</header>
+
+<main>
+  <div class="cover">
+    <!-- 2. HERO -->
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <h1 class="hero-word" aria-label="Kade">
+          <span class="hl" aria-hidden="true"><span>K</span></span><span class="hl" aria-hidden="true"><span>A</span></span><span class="hl" aria-hidden="true"><span>D</span></span><span class="hl" aria-hidden="true"><span>E</span></span>
+        </h1>
+        <p class="hero-intro">Independent brand and web designer. I help founders and small studios turn good ideas into identities and websites people remember.</p>
+      </div>
+      <p class="hero-foot">Based in Copenhagen</p>
+    </section>
+
+    <!-- 3. WORKS -->
+    <section class="works" id="works" aria-label="Selected works">
+      <div class="works-grid">
+        <a class="card" href="#" data-card>
+          <div class="card-media ph" style="--fb:#8f4422"><div class="card-zoom"><img class="card-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_6122d96a-8220-4d49-a3ae-a6e70a9d83fd.png" alt="" loading="eager" decoding="async"></div></div>
+          <div class="card-spacer"></div>
+          <div class="card-cap"><h3>Halden Hardware</h3><p>Brand identity<br>Industrial design</p></div>
+        </a>
+        <a class="card" href="#" data-card>
+          <div class="card-media ph" style="--fb:#2f5296"><div class="card-zoom"><img class="card-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063549_c8be252f-02f8-4f88-aece-3582f1030a74.png" alt="" loading="eager" decoding="async"></div></div>
+          <div class="card-spacer"></div>
+          <div class="card-cap"><h3>Solvig Pantry</h3><p>Packaging<br>Brand system</p></div>
+        </a>
+        <a class="card card--full" href="#" data-card>
+          <div class="card-media ph" style="--fb:#9c7a24"><div class="card-zoom"><img class="card-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_2c063738-ef61-481b-a1d7-90a25ca546ad.png" alt="" loading="eager" decoding="async"></div></div>
+          <div class="card-spacer"></div>
+          <div class="card-cap"><h3>Nordlys Journal</h3><p>Product design<br>Editorial app</p></div>
+        </a>
+        <a class="card" href="#" data-card>
+          <div class="card-media ph" style="--fb:#9a5440"><div class="card-zoom"><img class="card-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063522_699468b6-904d-4804-a128-d97ebe64a08c.png" alt="" loading="eager" decoding="async"></div></div>
+          <div class="card-spacer"></div>
+          <div class="card-cap"><h3>Terre Skincare</h3><p>Packaging<br>Art direction</p></div>
+        </a>
+        <a class="card" href="#" data-card>
+          <div class="card-media ph" style="--fb:#4b4552"><div class="card-zoom"><img class="card-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_3a570226-1ca0-44a5-be66-04e958ef2d26.png" alt="" loading="eager" decoding="async"></div></div>
+          <div class="card-spacer"></div>
+          <div class="card-cap"><h3>Ostra Press</h3><p>Identity<br>Website</p></div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- 4. ABOUT -->
+  <section class="about" id="about">
+    <div class="grid2">
+      <div class="label-col" data-reveal>
+        <span class="label">About</span>
+        <span class="label label--w">Arlo Kade</span>
+      </div>
+      <div class="about-text">
+        <p class="t32" data-reveal>I’m Arlo, an independent designer shaping brands and websites for companies that care about the details. I keep things simple, honest and built to last.</p>
+        <p class="t24 grey" data-reveal>For ten years I’ve worked with product start-ups, small studios and cultural institutions across Scandinavia, turning loose ideas into systems that teams can actually use.</p>
+      </div>
+    </div>
+
+    <div class="about-media">
+      <figure class="am am--portrait ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_071747_8aa39879-9af8-45bd-b525-c6bc6dbc5295.png" alt="" loading="eager" decoding="async"></figure>
+      <figure class="am am--square ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063549_611357e2-4862-410b-8143-94f7c5514ba1.png" alt="" loading="eager" decoding="async"></figure>
+    </div>
+
+    <div class="exp" data-stagger>
+      <div class="exp-row exp-head" data-ri><span>Company</span><span>Role</span><span>Year</span></div>
+      <div class="exp-row" data-ri><span>Nordlys Studio</span><span>Senior designer</span><span>2023 — Now</span></div>
+      <div class="exp-row" data-ri><span>Halden &amp; Co.</span><span>Design lead</span><span>2020 — 2023</span></div>
+      <div class="exp-row" data-ri><span>Ostra Press</span><span>Brand designer</span><span>2018 — 2020</span></div>
+      <div class="exp-row" data-ri><span>Fieldwork Agency</span><span>Web designer</span><span>2016 — 2018</span></div>
+      <div class="exp-row" data-ri><span>Freelance</span><span>Designer</span><span>2014 — 2016</span></div>
+    </div>
+  </section>
+
+  <!-- 5. CAPABILITIES -->
+  <section class="caps" id="capabilities">
+    <div class="grid2">
+      <aside>
+        <div class="sticky-col" data-reveal>
+          <span class="label">Capabilities</span>
+          <p class="caps-lead">Three disciplines, one process: find the idea first, then make it work everywhere it needs to.</p>
+          <figure class="caps-img ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_cfe6d001-ca98-4d8a-9354-a923588e2e90.png" alt="" loading="eager" decoding="async"></figure>
+        </div>
+      </aside>
+      <div class="caps-right">
+        <article class="svc" data-stagger>
+          <div class="svc-head" data-ri><h3>Branding</h3><p>Identities that stay clear at every size, from favicon to shopfront.</p></div>
+          <ul class="svc-tags">
+            <li data-ri>Strategy</li><li data-ri>Naming</li><li data-ri>Logo design</li><li data-ri>Visual identity</li><li data-ri>Packaging</li><li data-ri>Guidelines</li>
+          </ul>
+        </article>
+        <article class="svc" data-stagger>
+          <div class="svc-head" data-ri><h3>Web design</h3><p>Sites with a point of view, designed around content and motion.</p></div>
+          <ul class="svc-tags">
+            <li data-ri>UX structure</li><li data-ri>Art direction</li><li data-ri>Interface design</li><li data-ri>Motion</li><li data-ri>Design systems</li><li data-ri>Prototyping</li>
+          </ul>
+        </article>
+        <article class="svc" data-stagger>
+          <div class="svc-head" data-ri><h3>Development</h3><p>Built in Framer or Webflow, handed over ready for your team to edit.</p></div>
+          <ul class="svc-tags">
+            <li data-ri>Framer</li><li data-ri>Webflow</li><li data-ri>CMS setup</li><li data-ri>Interactions</li><li data-ri>SEO basics</li><li data-ri>Care plans</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TESTIMONIALS -->
+  <section class="testi">
+    <div class="grid2">
+      <aside>
+        <div class="sticky-col" data-reveal>
+          <span class="label">What clients say</span>
+          <p class="testi-lead">A few words from people I’ve worked with.</p>
+        </div>
+      </aside>
+      <div>
+        <figure class="quote" data-stagger>
+          <figcaption class="q-who" data-ri><span class="avatar">FL</span><span><b>Freja Lund</b><span class="role">Founder, Solvig Pantry</span></span></figcaption>
+          <blockquote data-ri>“Arlo found the one idea our brand was missing, then made everything around it quieter. Sales of the new range doubled in a season.”</blockquote>
+        </figure>
+        <figure class="quote" data-stagger>
+          <figcaption class="q-who" data-ri><span class="avatar">MH</span><span><b>Mads Holm</b><span class="role">CMO, Halden Hardware</span></span></figcaption>
+          <blockquote data-ri>“The site launched on time, loads fast, and our team can actually edit it without calling anyone. That alone was worth it.”</blockquote>
+        </figure>
+        <figure class="quote" data-stagger>
+          <figcaption class="q-who" data-ri><span class="avatar">IV</span><span><b>Ines Varga</b><span class="role">Editor-in-chief, Nordlys Journal</span></span></figcaption>
+          <blockquote data-ri>“He asks the uncomfortable questions early, which is exactly why the work still holds up two years later.”</blockquote>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CLIENTS -->
+  <section class="clients" aria-label="Clients and partners">
+    <p class="label" data-reveal>Clients &amp; Partners</p>
+    <div class="ticker" data-reveal>
+      <div class="ticker-track">
+        <div class="ticker-set">
+          <span class="logo lg-halden"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="13" cy="13" r="10.5"/><path d="M6 20 20 6"/></svg>halden</span>
+          <span class="logo lg-nordlys">NORDLYS</span>
+          <span class="logo lg-ostra">Ostra Press</span>
+          <span class="logo lg-solvig"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="4"/><path d="M10 0v4M10 16v4M0 10h4M16 10h4M2.9 2.9l2.8 2.8M14.3 14.3l2.8 2.8M2.9 17.1l2.8-2.8M14.3 5.7l2.8-2.8" stroke="currentColor" stroke-width="1.8"/></svg>solvig</span>
+          <span class="logo lg-terre">TERRE</span>
+          <span class="logo lg-field"><svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><rect x="0" y="0" width="10" height="10"/><rect x="12" y="12" width="10" height="10"/></svg>Fieldwork</span>
+        </div>
+        <div class="ticker-set" aria-hidden="true">
+          <span class="logo lg-halden"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="13" cy="13" r="10.5"/><path d="M6 20 20 6"/></svg>halden</span>
+          <span class="logo lg-nordlys">NORDLYS</span>
+          <span class="logo lg-ostra">Ostra Press</span>
+          <span class="logo lg-solvig"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="4"/><path d="M10 0v4M10 16v4M0 10h4M16 10h4M2.9 2.9l2.8 2.8M14.3 14.3l2.8 2.8M2.9 17.1l2.8-2.8M14.3 5.7l2.8-2.8" stroke="currentColor" stroke-width="1.8"/></svg>solvig</span>
+          <span class="logo lg-terre">TERRE</span>
+          <span class="logo lg-field"><svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><rect x="0" y="0" width="10" height="10"/><rect x="12" y="12" width="10" height="10"/></svg>Fieldwork</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FULL-WIDTH IMAGE -->
+  <section class="fullimg ph" aria-hidden="true">
+    <div class="fullimg-in"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_2c063738-ef61-481b-a1d7-90a25ca546ad.png" alt="" loading="eager" decoding="async"></div>
+  </section>
+
+  <!-- 9. AWARDS -->
+  <section class="awards">
+    <h2 class="t32" data-reveal>Awards &amp; Recognitions</h2>
+    <div class="aw-grid" data-stagger>
+      <div class="aw" data-ri><span class="aw-name">Pixelhaus Awards</span><span class="aw-year">2026</span><span class="aw-tag">[ Site of the day ]</span><span class="aw-proj">Nordlys Journal</span></div>
+      <div class="aw" data-ri><span class="aw-name">Nordic Web Prize</span><span class="aw-year">2025</span><span class="aw-tag">[ Gold — Branding ]</span><span class="aw-proj">Halden Hardware</span></div>
+      <div class="aw" data-ri><span class="aw-name">Grid &amp; Type Annual</span><span class="aw-year">2025</span><span class="aw-tag">[ Selected work ]</span><span class="aw-proj">Ostra Press</span></div>
+      <div class="aw" data-ri><span class="aw-name">Screenfolk</span><span class="aw-year">2024</span><span class="aw-tag">[ Honorable mention ]</span><span class="aw-proj">Terre Skincare</span></div>
+      <div class="aw" data-ri><span class="aw-name">Formhaus Awards</span><span class="aw-year">2024</span><span class="aw-tag">[ Silver — Packaging ]</span><span class="aw-proj">Solvig Pantry</span></div>
+      <div class="aw" data-ri><span class="aw-name">Pixelhaus Awards</span><span class="aw-year">2023</span><span class="aw-tag">[ Developer award ]</span><span class="aw-proj">Arlo Kade — Portfolio</span></div>
+    </div>
+  </section>
+
+  <!-- 10. VALUES (white) -->
+  <section class="values" id="values">
+    <div class="ring-stage" aria-hidden="true">
+      <div class="ring">
+        <figure class="rcard ph" style="--fb:#5e5248"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_3a570226-1ca0-44a5-be66-04e958ef2d26.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#b0664c"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063522_699468b6-904d-4804-a128-d97ebe64a08c.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#b9453a"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_cfe6d001-ca98-4d8a-9354-a923588e2e90.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#6f4a38"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063523_b0e0597b-49bd-4401-8187-2392dcf44050.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#3449b8"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063549_611357e2-4862-410b-8143-94f7c5514ba1.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#3a68c4"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063549_c8be252f-02f8-4f88-aece-3582f1030a74.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#b8902c"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_2c063738-ef61-481b-a1d7-90a25ca546ad.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#b2531f"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_6122d96a-8220-4d49-a3ae-a6e70a9d83fd.png" alt="" loading="eager" decoding="async"></figure>
+        <figure class="rcard ph" style="--fb:#c8692a"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_7d8f5109-a178-442a-b05d-63c74932e4b6.png" alt="" loading="eager" decoding="async"></figure>
+      </div>
+    </div>
+    <div class="values-text" data-stagger>
+      <span class="v-tiny" data-ri>[ Values ]</span>
+      <span class="v-line" data-ri></span>
+      <p class="v-item" data-ri>Stay curious</p>
+      <p class="v-item" data-ri>Say less, mean it</p>
+      <p class="v-item" data-ri>Enjoy the craft</p>
+    </div>
+  </section>
+</main>
+
+<!-- 11. FOOTER -->
+<footer class="footer" id="contact">
+  <div class="ft-ticker" aria-label="Arlo Kade">
+    <div class="ft-track" aria-hidden="true">
+      <div class="ft-set"><span>ARLO KADE —</span><span>ARLO KADE —</span></div>
+      <div class="ft-set"><span>ARLO KADE —</span><span>ARLO KADE —</span></div>
+    </div>
+  </div>
+  <div class="ft-links">
+    <span></span>
+    <span class="ft-div" data-ri></span>
+    <ul data-stagger>
+      <li data-ri><a href="#" data-roll-target><span data-roll>LinkedIn</span><span class="arr">↗</span></a></li>
+      <li data-ri><a href="#" data-roll-target><span data-roll>Instagram</span><span class="arr">↗</span></a></li>
+      <li data-ri><a href="#" data-roll-target><span data-roll>Behance</span><span class="arr">↗</span></a></li>
+      <li data-ri><a href="mailto:hello@arlokade.studio" data-roll-target><span data-roll>Mail</span><span class="arr">↗</span></a></li>
+    </ul>
+  </div>
+  <p class="ft-copy">© 2026 Arlo Kade — Copenhagen</p>
+</footer>
+
+
+<script src="lib/gsap.min.js"></script>
+<script src="lib/ScrollTrigger.min.js"></script>
+<script src="lib/lenis.min.js"></script>
+<script>
+(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* failed remote images: hide the broken box, keep the fallback colour */
+  document.querySelectorAll('img').forEach(img => {
+    const hide = () => { img.style.opacity = '0'; };
+    if (img.complete && img.naturalWidth === 0 && img.currentSrc) hide();
+    img.addEventListener('error', hide);
+  });
+
+  /* ---------- letter roll: split text, duplicate each letter ---------- */
+  document.querySelectorAll('[data-roll]').forEach(el => {
+    const text = el.textContent.trim();
+    el.textContent = '';
+    const host = el.closest('a') || el;
+    if (!host.hasAttribute('aria-label')) host.setAttribute('aria-label', text);
+    const wrap = document.createElement('span');
+    wrap.className = 'roll';
+    wrap.setAttribute('aria-hidden', 'true');
+    [...text].forEach((c, i) => {
+      const ch = document.createElement('span'); ch.className = 'ch';
+      const inner = document.createElement('span');
+      const cc = c === ' ' ? ' ' : c;
+      inner.textContent = cc; inner.dataset.c = cc; inner.style.setProperty('--i', i);
+      ch.appendChild(inner); wrap.appendChild(ch);
+    });
+    el.appendChild(wrap);
+  });
+  // footer links: hover anywhere on the <a> rolls the inner word
+  document.querySelectorAll('[data-roll-target]').forEach(a => {
+    const r = a.querySelector('[data-roll]');
+    a.addEventListener('mouseenter', () => r.querySelectorAll('.ch > span').forEach(s => s.style.transform = 'translateY(-50%)'));
+    a.addEventListener('mouseleave', () => r.querySelectorAll('.ch > span').forEach(s => s.style.transform = ''));
+  });
+  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+
+  /* ---------- smooth scroll ---------- */
+  let lenis = null;
+  if (!reduce) {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    window.__lenis = lenis;
+  }
+  document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    const target = id === '#top' ? 0 : document.querySelector(id);
+    if (target === null) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(target, { duration: 1.6, easing: t => 1 - Math.pow(1 - t, 4) });
+    else window.scrollTo({ top: target === 0 ? 0 : target.getBoundingClientRect().top + scrollY });
+  }));
+
+  /* ---------- hero intro ---------- */
+  let started = false;
+  function intro() {
+    if (started) return; started = true;
+    if (reduce) return;
+    const tl = gsap.timeline({ delay: 0.15 });
+    tl.fromTo('.hl > span', { y: 0, yPercent: 112 }, { y: 0, yPercent: 0, duration: 1.5, ease: 'expo.out', stagger: 0.085 })
+      .fromTo('.nav > *', { autoAlpha: 0, y: -10 }, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.07 }, 0.35)
+      .fromTo('.hero-intro', { autoAlpha: 0, y: 24, filter: 'blur(6px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' }, 0.6)
+      .fromTo('.hero-foot', { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.75);
+  }
+  const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(() => { intro(); ScrollTrigger.refresh(); });
+  setTimeout(intro, 1200);
+
+  if (reduce) {
+    initRing(true); initFooterTicker(true);
+    return;
+  }
+
+  /* ---------- generic fade-up reveals ---------- */
+  const revealFrom = { autoAlpha: 0, y: 24, filter: 'blur(6px)' };
+  const revealTo = { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'expo.out' };
+  gsap.utils.toArray('[data-reveal]').forEach(el => {
+    gsap.fromTo(el, revealFrom, { ...revealTo, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+  gsap.utils.toArray('[data-stagger]').forEach(group => {
+    const items = group.querySelectorAll('[data-ri]');
+    gsap.fromTo(items, revealFrom, { ...revealTo, stagger: 0.09, scrollTrigger: { trigger: group, start: 'top 86%', once: true } });
+  });
+  // the footer divider draws downward
+  gsap.fromTo('.ft-div', { autoAlpha: 1, scaleY: 0 }, { scaleY: 1, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: '.ft-links', start: 'top 88%', once: true } });
+
+  /* ---------- works: parallax inside the frame ---------- */
+  gsap.utils.toArray('[data-card]').forEach(card => {
+    const img = card.querySelector('.card-img');
+    gsap.fromTo(img, { yPercent: -7 }, { yPercent: 7, ease: 'none', scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+
+  /* ---------- about: two images at different speeds ---------- */
+  gsap.fromTo('.am--portrait', { y: 70 }, { y: -70, ease: 'none', scrollTrigger: { trigger: '.about-media', start: 'top bottom', end: 'bottom top', scrub: true } });
+  gsap.fromTo('.am--square', { y: 210 }, { y: -210, ease: 'none', scrollTrigger: { trigger: '.about-media', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+  /* ---------- full-width image: 1.15 -> 1 ---------- */
+  gsap.fromTo('.fullimg-in', { scale: 1.15 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.fullimg', start: 'top bottom', end: 'bottom 70%', scrub: true } });
+
+  initRing(false);
+  initFooterTicker(false);
+
+  /* ---------- values: concave 3D ring, seen from inside the cylinder ---------- */
+  function initRing(stat) {
+    const stage = document.querySelector('.ring-stage');
+    const ring = stage.querySelector('.ring');
+    const src = [...ring.querySelectorAll('.rcard')];
+    const N = 27;                        // cards on the full cylinder (9 images x3, never twice in a row)
+    for (let i = src.length; i < N; i++) {
+      const c = src[i % src.length].cloneNode(true);
+      const im = c.querySelector('img');
+      if (im) im.addEventListener('error', () => { im.style.opacity = '0'; });
+      ring.appendChild(c);
+    }
+    const cards = [...ring.querySelectorAll('.rcard')];
+    const step = 360 / N, R = 1000, D = 0.15 * R;   // camera sits D behind the axis
+    const cw = 2 * R * Math.tan(Math.PI / N) * 1.05; // a touch wider than the chord: slight overlap
+    const ch = cw * 4 / 3, LIMIT = 60, FADE0 = 45;
+    cards.forEach(c => Object.assign(c.style, { width: cw + 'px', height: ch + 'px', left: -cw / 2 + 'px', top: -ch / 2 + 'px' }));
+    const layout = () => {
+      const W = stage.clientWidth;
+      const P = W * (W < 810 ? 0.9 : 0.285);
+      stage.style.perspective = P + 'px';
+      ring.style.transform = `translateZ(${(P - D).toFixed(1)}px)`;   // axis between screen and camera
+      const maxH = ch * P / (D + R * Math.cos(LIMIT * Math.PI / 180));
+      stage.style.height = Math.round(maxH + 50) + 'px';
+    };
+    let auto = 0, rot = 0, target = 0, active = true;
+    const render = () => {
+      const base = auto + rot;
+      for (let i = 0; i < N; i++) {
+        const a = ((((i - 4) * step + base) % 360) + 540) % 360 - 180;   // -180..180, 0 = straight ahead
+        const el = cards[i];
+        if (Math.abs(a) > LIMIT) { if (el.style.visibility !== 'hidden') el.style.visibility = 'hidden'; continue; }
+        if (el.style.visibility === 'hidden') el.style.visibility = '';
+        el.style.transform = `rotateY(${a.toFixed(3)}deg) translateZ(${-R}px)`;
+        el.style.setProperty('--fade', Math.min(1, Math.max(0, (Math.abs(a) - FADE0) / (LIMIT - FADE0))).toFixed(3));
+      }
+    };
+    layout(); render();
+    window.addEventListener('resize', () => { layout(); render(); });
+    if (stat) return;
+    ScrollTrigger.create({
+      trigger: '.values', start: 'top bottom', end: 'bottom top',
+      onUpdate: s => { target = s.progress * 90; },
+      onToggle: s => { active = s.isActive; }
+    });
+    gsap.ticker.add((t, dt) => {
+      if (!active) return;
+      auto += Math.min(dt, 50) * 0.005; // ~5deg per second idle spin, cards travel right-to-left
+      rot += (target - rot) * 0.07;
+      render();
+    });
+  }
+
+  /* ---------- footer: giant name ticker driven by scroll ---------- */
+  function initFooterTicker(stat) {
+    const track = document.querySelector('.ft-track');
+    const set = track.querySelector('.ft-set');
+    let w = set.offsetWidth, x = 0, lastY = window.scrollY, vel = 0, active = false;
+    window.addEventListener('resize', () => { w = set.offsetWidth; });
+    if (stat) return;
+    ScrollTrigger.create({ trigger: '.footer', start: 'top bottom', end: 'bottom top', onToggle: s => { active = s.isActive; } });
+    gsap.ticker.add((t, dt) => {
+      const y = lenis ? lenis.animatedScroll : window.scrollY;
+      const dy = y - lastY; lastY = y;
+      vel += (dy - vel) * 0.2;
+      if (!active) return;
+      x -= Math.min(dt, 50) * 0.045 + vel * 0.9; // slow drift + scroll velocity
+      if (w > 0) { x = x % w; if (x > 0) x -= w; }
+      track.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
+    });
+  }
+})();
+</script>
+
+<!-- Switzer Int. top bar -->
+<style>
+@font-face{font-family:"SZ Tight";font-weight:500;src:url(fonts/inter-tight-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"SZ Mono";font-weight:400;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2")}
+.sz-bar{position:fixed;top:0;left:0;right:0;height:28px;z-index:2147483646;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#0E0E0E;color:#EDEAE3;border-bottom:1px solid #2A2A28;font:500 13px/1 "SZ Tight","Inter Tight","Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;mix-blend-mode:normal;pointer-events:auto}
+.sz-bar a{color:#8A8A85;text-decoration:none;font:400 11px/1 "SZ Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.sz-bar a:hover,.sz-bar a:focus-visible{color:#EDEAE3}
+.sz-bar span{text-transform:none !important;font:inherit !important;letter-spacing:inherit !important;color:#EDEAE3 !important}
+</style>
+<div class="sz-bar" role="banner"><span>Switzer Int.</span></div>
+<script>
+(function(){
+  var H = 28;
+  function shift(){
+    document.querySelectorAll('body *').forEach(function(el){
+      if (el.closest('.sz-bar') || el.dataset.szShifted) return;
+      var cs = getComputedStyle(el);
+      if (cs.position !== 'fixed') return;
+      var r = el.getBoundingClientRect();
+      if (r.height > 0 && r.height < 220 && r.top < H) {
+        var t = parseFloat(cs.top); if (isNaN(t)) t = 0;
+        el.style.top = (t + H) + 'px';
+        el.dataset.szShifted = '1';
+      }
+    });
+  }
+  if (document.readyState === 'complete') shift(); else window.addEventListener('load', shift);
+  setTimeout(shift, 1500); setTimeout(shift, 4000);
+})();
+</script>
+</body>
+</html>

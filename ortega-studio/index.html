@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ortega Studio — Rafa Ortega, photographer &amp; filmmaker</title>
+<meta name="description" content="Rafa Ortega — photographer and filmmaker based in Almería, Spain. Editorial, campaign and film work.">
+<link rel="stylesheet" href="lib/lenis.css">
+<script>
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');
+</script>
+<style>
+/* ---------- Fonts (local) ---------- */
+@font-face{font-family:'Sofia Sans Extra Condensed';src:url(fonts/sofia-sans-extra-condensed-latin-900-normal.woff2) format('woff2');font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:'Sofia Sans Extra Condensed';src:url(fonts/sofia-sans-extra-condensed-latin-800-normal.woff2) format('woff2');font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:'Martian Mono';src:url(fonts/martian-mono-latin-400-normal.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Serif';src:url(fonts/instrument-serif-latin-400-normal.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Serif';src:url(fonts/instrument-serif-latin-400-italic.woff2) format('woff2');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Inter';src:url(fonts/inter-latin-300-normal.woff2) format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Inter';src:url(fonts/inter-latin-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'Inter Tight';src:url(fonts/inter-tight-latin-500-normal.woff2) format('woff2');font-weight:500;font-display:swap}
+
+/* ---------- Tokens ---------- */
+:root{
+  --bg:#0E0E0E; --fg:#EDEAE3; --stone:#8A8A85; --line:#2A2A28; --cell:#161616;
+  --light:#EDEAE3; --ink:#0E0E0E;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --g:24px;
+  --disp:'Sofia Sans Extra Condensed', 'Arial Narrow', Impact, sans-serif;
+  --mono:'Martian Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-weight:400;font-size:12px;line-height:1.6;letter-spacing:.04em;text-transform:uppercase;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:none}
+main{overflow-x:clip}
+::selection{background:var(--fg);color:var(--bg)}
+
+.d{font-family:var(--disp);font-weight:900;line-height:.8;text-transform:uppercase;letter-spacing:0}
+.stone{color:var(--stone)}
+.sq{display:inline-block;width:.42em;height:.42em;background:currentColor;vertical-align:.14em;margin:0 .75em}
+.ico{display:inline-block;width:.9em;height:.9em;vertical-align:-.06em;margin-left:.4em;flex:none}
+.label{color:var(--stone)}
+
+/* split letters (masks per word) */
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
+.c{display:inline-block;will-change:transform}
+.js [data-chars], .js .hero__title{visibility:hidden}
+
+/* text roll (label stacked twice in a 1-line mask) */
+.roll{display:inline-block;position:relative;overflow:hidden;vertical-align:top;line-height:1.35}
+.roll__t{display:block;position:relative;transition:transform .6s var(--ease)}
+.roll__t::after{content:attr(data-t);position:absolute;left:0;top:100%}
+a:hover .roll__t, a:focus-visible .roll__t{transform:translateY(-100%)}
+
+/* image frames with fallbacks (images fail offline) */
+.media{position:relative;overflow:hidden;background:#1b1b1a}
+.media__in{position:absolute;inset:0;will-change:transform}
+.media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;color:transparent}
+.f-b1{background:radial-gradient(70% 90% at 58% 38%,#ffb05a 0%,#ef7a2a 28%,#b8441a 58%,#3b1308 100%)}
+.f-b2{background:linear-gradient(180deg,#1d2b52 0%,#3d5590 46%,#8c93a8 72%,#d8ccb1 100%)}
+.f-b3{background:radial-gradient(60% 85% at 46% 52%,#e2283c 0%,#a10f22 42%,#4c0610 82%,#22030a 100%)}
+.f-b4{background:linear-gradient(180deg,#c9d3d2 0%,#a7b18a 38%,#6f7b3d 66%,#38431c 100%)}
+.f-b5{background:radial-gradient(42% 55% at 52% 50%,#d7e2ee 0%,#7f9cc4 24%,#3d5379 52%,#151b27 100%)}
+.f-b6{background:linear-gradient(180deg,#e4e7ea 0%,#c9cdd1 42%,#a2a6aa 72%,#6d7175 100%)}
+
+/* ---------- Nav ---------- */
+.nav{position:fixed;inset:0 0 auto 0;height:64px;padding:0 var(--g);display:flex;align-items:center;justify-content:space-between;z-index:60;mix-blend-mode:difference;color:var(--fg);pointer-events:none}
+.nav > *{pointer-events:auto}
+.nav__logo{font-size:24px;line-height:1;display:block}
+.nav__links{display:flex;gap:24px;list-style:none}
+.nav__links a{display:block}
+.pill{position:fixed;top:16px;right:var(--pill-r,440px);z-index:61;height:32px;display:flex;align-items:center;gap:10px;padding:3px 14px 3px 3px;border-radius:999px;background:rgba(24,24,23,.72);border:1px solid var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--fg)}
+.pill__thumb{width:40px;height:24px;border-radius:999px;flex:none}
+.pill__thumb .media__in{transition:transform .8s var(--ease)}
+.pill:hover .pill__thumb .media__in{transform:scale(1.18)}
+.pill__k{color:var(--stone)}
+.js .nav > *, .js .pill{opacity:0}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;padding:80px var(--g) 48px}
+.hero__stage{position:relative}
+.hero__title{position:sticky;top:80px;z-index:3;mix-blend-mode:difference;color:var(--fg);white-space:nowrap;font-size:calc((100vw - 48px) * .1915)}
+.hero__title-in{display:inline-block;white-space:nowrap}
+.hero__meta{position:relative;z-index:1;display:flex;justify-content:space-between;gap:24px;margin-top:20px}
+.hero__media{position:relative;z-index:1;height:min(720px,80vh);margin-top:24px}
+.js .hero__media{clip-path:inset(100% 0 0 0)}
+
+/* ---------- Intro ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1fr) 500px minmax(0,1fr);gap:48px;padding:120px var(--g);min-height:1000px}
+.intro__col{align-self:start;position:sticky;top:120px;max-width:400px}
+.intro__col--r{align-self:end;top:auto;bottom:80px;justify-self:end}
+.intro__col .label{display:block;margin-bottom:20px}
+.intro__col p + p{margin-top:1.2em}
+.intro__fig{align-self:center;width:500px}
+.intro__media{width:100%;aspect-ratio:3/4}
+.intro__media .media__in{top:-10%;bottom:-10%}
+.intro__fig figcaption{display:flex;justify-content:space-between;margin-top:12px;color:var(--stone)}
+.link{display:inline-flex;align-items:center;margin-top:28px;padding-bottom:4px;border-bottom:1px solid currentColor}
+
+/* ---------- Selected work ---------- */
+.work{padding:160px var(--g) 140px}
+.work__head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:48px}
+.work__title{font-size:clamp(64px,11.11vw,160px)}
+.work__meta{text-align:right;color:var(--stone);padding-bottom:6px}
+.work__meta b{font-weight:400;color:var(--fg)}
+.grid{display:grid;grid-template-columns:1fr 1fr}
+.card{position:relative;display:block;height:680px;overflow:hidden;color:var(--fg)}
+.card--wide{grid-column:1 / -1;height:560px}
+.card__media{position:absolute;inset:0}
+.card__img{transition:transform 1s var(--ease)}
+.card:hover .card__img{transform:scale(1.06)}
+.card__title{position:absolute;z-index:2;top:24px;left:24px;font-size:clamp(32px,3.34vw,48px);mix-blend-mode:difference;color:var(--fg)}
+.card__view{position:absolute;z-index:2;top:24px;right:24px;display:flex;align-items:center;opacity:0;transform:translateY(-6px);transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.card:hover .card__view, .card:focus-visible .card__view{opacity:1;transform:none}
+.card__foot{position:absolute;z-index:2;left:24px;right:24px;bottom:20px;display:flex;justify-content:space-between;gap:16px}
+.work__more{display:flex;justify-content:center;margin-top:64px}
+.btn{display:inline-flex;align-items:center;height:48px;padding:0 28px;border:1px solid var(--fg);border-radius:999px;transition:background-color .5s var(--ease),color .5s var(--ease)}
+.btn:hover{background:var(--fg);color:var(--bg)}
+
+/* ---------- Marquee ---------- */
+.marquee{overflow:hidden;padding:40px 0 140px}
+.marquee__track{display:flex;width:max-content;white-space:nowrap;font-size:clamp(120px,22.23vw,320px);color:var(--fg);will-change:transform}
+.marquee__track > span{display:block;padding-right:.08em}
+.marquee__track i{font-style:normal;display:inline-block;margin:0 .16em}
+
+/* ---------- Clients ---------- */
+.clients{padding:0 var(--g) 160px}
+.clients__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.wall{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.cell{position:relative;height:260px;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:background-color .5s var(--ease)}
+.cell:hover{background:var(--cell)}
+.cell__cap{position:absolute;left:16px;bottom:14px;color:var(--stone);display:flex;align-items:center}
+.cell__cap .sq{margin:0 .6em}
+.logo{display:flex;align-items:center;color:var(--fg);transition:transform .8s var(--ease);text-transform:none;letter-spacing:0}
+.cell:hover .logo{transform:scale(1.05)}
+.lg-norte{gap:12px;font:600 19px/1 'Inter',sans-serif;letter-spacing:.34em;text-transform:uppercase}
+.lg-norte svg{width:28px;height:28px}
+.lg-marea{flex-direction:column;gap:2px;font:italic 400 46px/1 'Instrument Serif',serif}
+.lg-marea svg{width:64px;height:8px}
+.lg-ferro{font:900 36px/1 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.lg-ferro i{font:italic 400 38px/1 'Instrument Serif',serif;margin:0 .14em;transform:translateY(.04em)}
+.lg-oxido{font:400 15px/1 var(--mono);letter-spacing:.34em;padding:11px 10px 11px 15px;border:1.5px solid currentColor;text-transform:uppercase}
+.lg-lumen{gap:12px;font:400 26px/.95 'Instrument Serif',serif}
+.lg-lumen svg{width:20px;height:20px}
+.lg-kasbah{flex-direction:column;align-items:flex-start;gap:6px}
+.lg-kasbah b{font:800 42px/.8 var(--disp);letter-spacing:.07em;text-transform:uppercase}
+.lg-kasbah small{font:400 8px/1 var(--mono);letter-spacing:.42em;text-transform:uppercase;display:flex;align-items:center}
+.lg-kasbah small .sq{margin:0 .7em}
+.lg-duna{flex-direction:column;gap:4px;font:300 40px/.9 'Inter',sans-serif;letter-spacing:-.02em}
+.lg-duna svg{width:46px;height:20px}
+.lg-ultra{gap:12px;font:500 19px/1 'Inter Tight',sans-serif;letter-spacing:.22em;text-transform:uppercase}
+.lg-ultra svg{width:26px;height:26px}
+
+/* ---------- Journal (light) ---------- */
+.journal{background:var(--light);color:var(--ink);padding:160px var(--g)}
+.journal__head{display:flex;justify-content:space-between;align-items:flex-end;gap:48px}
+.journal__title{font-size:clamp(64px,11.11vw,160px);flex:none;white-space:nowrap}
+.journal__intro{max-width:300px;color:#6d6c67;padding-bottom:6px}
+.posts{margin:80px -12px 0;border-top:1px solid rgba(14,14,14,.16);list-style:none}
+.post{display:grid;grid-template-columns:200px minmax(0,1.3fr) minmax(0,1fr) 32px;gap:40px;align-items:center;padding:34px 12px;border-bottom:1px solid rgba(14,14,14,.16);transition:background-color .5s var(--ease)}
+.post:hover{background:#E1DED6}
+.post__date{color:#6d6c67}
+.post__title{font-size:clamp(24px,2.23vw,32px);line-height:.92;transition:transform .6s var(--ease)}
+.post:hover .post__title{transform:translateX(8px)}
+.post__ex{color:#7c7b75;max-width:440px}
+.post__btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--ink);display:grid;place-items:center}
+.post__btn svg{width:12px;height:12px;transition:transform .6s var(--ease)}
+.post:hover .post__btn svg{transform:rotate(-45deg)}
+
+/* ---------- CTA + footer ---------- */
+.cta{min-height:100vh;display:flex;flex-direction:column;padding:160px var(--g) 0}
+.cta__main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px}
+.cta__title{font-size:clamp(84px,22.23vw,320px);text-align:center;white-space:nowrap}
+.cta__row{display:flex;align-items:center;gap:48px}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:120px;padding:24px 0;border-top:1px solid var(--line)}
+.foot__links{display:flex;gap:24px;list-style:none}
+
+/* reveal initial state (Framer "appear") */
+.js [data-reveal], .js [data-stagger] > *{opacity:0}
+
+/* back link */
+.back{position:fixed;left:16px;bottom:14px;z-index:9999;font:400 11px/1 var(--mono);letter-spacing:.02em;text-transform:none;color:#fff;mix-blend-mode:difference}
+
+/* ---------- Mobile ---------- */
+@media (max-width:760px){
+  :root{--g:16px}
+  .nav{height:56px}
+  .nav__logo{font-size:20px}
+  .nav__links{gap:12px;font-size:10px}
+  .pill{display:none}
+  .hero{padding:72px var(--g) 40px}
+  .hero__title{top:72px;font-size:calc((100vw - 32px) * .375)}
+  .hero__title .w{display:block}
+  .hero__meta{flex-wrap:wrap;gap:4px 16px;font-size:10px}
+  .hero__meta > :nth-child(3){display:none}
+  .hero__media{height:auto;aspect-ratio:3/4}
+  .intro{grid-template-columns:1fr;gap:40px;padding:96px var(--g);min-height:0}
+  .intro__col,.intro__col--r{position:relative;top:auto;bottom:auto;max-width:none;justify-self:start}
+  .intro__fig{width:100%}
+  .work{padding:96px var(--g) 96px}
+  .work__head{flex-direction:column;align-items:flex-start;gap:16px}
+  .work__meta{text-align:left}
+  .grid{grid-template-columns:1fr}
+  .card{height:440px}
+  .card--wide{height:300px}
+  .marquee{padding:24px 0 96px}
+  .clients{padding-bottom:96px}
+  .clients__head{flex-direction:column;align-items:flex-start;gap:4px}
+  .wall{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cell{height:170px}
+  .cell .logo{transform:scale(.78)}
+  .cell:hover .logo{transform:scale(.82)}
+  .cell__cap{left:10px;bottom:10px;font-size:9px}
+  .journal{padding:96px var(--g)}
+  .journal__head{flex-direction:column;align-items:flex-start;gap:20px}
+  .journal__title{white-space:normal}
+  .posts{margin-top:48px}
+  .post{grid-template-columns:1fr 32px;gap:12px 16px;padding:24px 12px}
+  .post__date{grid-column:1;grid-row:1}
+  .post__btn{grid-column:2;grid-row:1}
+  .post__title,.post__ex{grid-column:1 / -1}
+  .cta{padding-top:96px}
+  .cta__title{font-size:24vw}
+  .cta__row{flex-direction:column;gap:16px}
+  .foot{flex-direction:column;align-items:flex-start;gap:12px;margin-top:80px;padding-bottom:40px}
+  .foot__links{flex-wrap:wrap;gap:8px 16px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed nav: logo + links use difference blending; the pill sits on its own layer so its thumbnail keeps true colours -->
+<header class="nav" aria-label="Main">
+  <a class="nav__logo d" href="#top">Rafa Ortega</a>
+  <ul class="nav__links">
+    <li><a href="#work"><span data-roll>Work</span></a></li>
+    <li><a href="#about"><span data-roll>About</span></a></li>
+    <li><a href="#journal"><span data-roll>Journal</span></a></li>
+    <li><a href="#contact"><span data-roll>Contact</span></a></li>
+  </ul>
+</header>
+<a class="pill" href="#work" aria-label="Latest work: Crimson">
+  <span class="pill__thumb media"><span class="media__in f-b3"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063746_0d2ef4cc-6375-48df-8336-d3ec4b88a261.png" alt="" loading="eager" decoding="async"></span></span>
+  <span><span class="pill__k">Latest work:</span> <span data-roll>Crimson</span></span>
+</a>
+
+<main id="top">
+
+  <!-- 1 · Hero: sticky difference headline over a photo that scrolls beneath it -->
+  <section class="hero" aria-label="Ortega Studio">
+    <div class="hero__stage">
+      <h1 class="hero__title d"><span class="hero__title-in">Ortega Studio</span></h1>
+      <div class="hero__media media">
+        <div class="media__in f-b1"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063627_7d8f5109-a178-442a-b05d-63c74932e4b6.png" alt="Woman in orange light looking up, wearing sunglasses" loading="eager" decoding="async"></div>
+      </div>
+    </div>
+    <div class="hero__meta" data-stagger>
+      <span>Photographer &amp; filmmaker</span>
+      <span>Based in Almería, Spain</span>
+      <span>Booking from Jan 2027</span>
+      <span class="stone">(Since 2014)</span>
+    </div>
+  </section>
+
+  <!-- 2 · Intro: three columns, sticky sides, parallax portrait -->
+  <section class="intro" id="about" aria-label="Intro">
+    <div class="intro__col" data-reveal>
+      <span class="label">[ Intro ]</span>
+      <p>Rafa Ortega is a photographer and filmmaker working out of a small studio in Almería. Twelve years of editorials, campaigns and short films — mostly made in hard southern light, always with a small crew.</p>
+    </div>
+    <figure class="intro__fig">
+      <div class="intro__media media">
+        <div class="media__in f-b2"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_071747_8aa39879-9af8-45bd-b525-c6bc6dbc5295.png" alt="Profile portrait in a cream wide-brim hat against a blue dusk sky" loading="eager" decoding="async"></div>
+      </div>
+      <figcaption><span>Self-portrait</span><span>Tabernas, 2025</span></figcaption>
+    </figure>
+    <div class="intro__col intro__col--r" data-reveal>
+      <span class="label">[ Approach ]</span>
+      <p>Long scouts, few setups, no shot list longer than a napkin. The pictures should feel found rather than built — for print, for screens, and for everything in between.</p>
+      <a class="link" href="#contact"><span data-roll>About me</span><svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a>
+    </div>
+  </section>
+
+  <!-- 3 · Selected work -->
+  <section class="work" id="work" aria-label="Selected work">
+    <div class="work__head">
+      <h2 class="work__title d" data-chars>Selected work</h2>
+      <p class="work__meta" data-reveal><b>(04)</b><br>Commissions &amp; personal<br>projects, 2024 – 2026</p>
+    </div>
+    <div class="grid">
+      <a class="card card--wide" href="#work" data-reveal>
+        <div class="card__media media"><div class="card__img media__in f-b3"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063746_0d2ef4cc-6375-48df-8336-d3ec4b88a261.png" alt="Dancer in a crimson red room" loading="eager" decoding="async"></div></div>
+        <h3 class="card__title d">Crimson</h3>
+        <span class="card__view">View<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        <div class="card__foot"><span>2026<i class="sq"></i>Editorial</span><span>Marea Magazine</span></div>
+      </a>
+      <a class="card" href="#work" data-reveal>
+        <div class="card__media media"><div class="card__img media__in f-b4"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063747_1b22bbca-e484-41e5-ab36-57e419ed6dff.png" alt="Three models in suits standing in tall grass" loading="eager" decoding="async"></div></div>
+        <h3 class="card__title d">Tall Grass</h3>
+        <span class="card__view">View<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        <div class="card__foot"><span>2025<i class="sq"></i>Campaign</span><span>Norte Tailoring</span></div>
+      </a>
+      <a class="card" href="#work" data-reveal data-delay=".12">
+        <div class="card__media media"><div class="card__img media__in f-b5"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063747_af6010cc-11b3-459e-b5ef-0d67ed69282b.png" alt="Close-up of a blue eye with silver glitter" loading="eager" decoding="async"></div></div>
+        <h3 class="card__title d">Silver Skin</h3>
+        <span class="card__view">View<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        <div class="card__foot"><span>2025<i class="sq"></i>Beauty</span><span>Lumen Atelier</span></div>
+      </a>
+      <a class="card card--wide" href="#work" data-reveal>
+        <div class="card__media media"><div class="card__img media__in f-b6"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_35qZl2awBJOL6cM0sHJHucU9S8O/hf_20261107_063746_ff4a3212-437d-4d56-82d6-4222860c364d.png" alt="Brutalist white concrete facade under a winter sky" loading="eager" decoding="async"></div></div>
+        <h3 class="card__title d">Concrete Winter</h3>
+        <span class="card__view">View<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        <div class="card__foot"><span>2024<i class="sq"></i>Short film</span><span>Ultramar Studio</span></div>
+      </a>
+    </div>
+    <div class="work__more" data-reveal>
+      <a class="btn" href="#work"><span data-roll>View all projects</span><svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a>
+    </div>
+  </section>
+
+  <!-- 4 · Scroll-scrubbed giant marquee -->
+  <section class="marquee" aria-label="Slow light, fast hands">
+    <div class="marquee__track d" aria-hidden="true">
+      <span>Slow light, fast hands<i>·</i></span>
+      <span>Slow light, fast hands<i>·</i></span>
+    </div>
+  </section>
+
+  <!-- 5 · Clients wall -->
+  <section class="clients" aria-label="Clients">
+    <div class="clients__head" data-reveal>
+      <span>[ Clients<i class="sq"></i>2014 – 2026 ]</span>
+      <span class="stone">Selected collaborators (08)</span>
+    </div>
+    <div class="wall" data-stagger>
+      <div class="cell">
+        <span class="logo lg-norte"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="12.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14 5.5l4.6 13.5h-9.2z" fill="currentColor"/></svg>Norte</span>
+        <span class="cell__cap">Campaign<i class="sq"></i>2025</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-marea">Marea<svg viewBox="0 0 64 8" aria-hidden="true"><path d="M0 4q8-6 16 0t16 0 16 0 16 0" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>
+        <span class="cell__cap">Editorial<i class="sq"></i>2026</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-ferro">Ferro<i>&amp;</i>Sal</span>
+        <span class="cell__cap">Lookbook<i class="sq"></i>2024</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-oxido">Óxido</span>
+        <span class="cell__cap">Music video<i class="sq"></i>2023</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-lumen"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 0c.8 6.6 3.4 9.2 10 10-6.6.8-9.2 3.4-10 10-.8-6.6-3.4-9.2-10-10 6.6-.8 9.2-3.4 10-10z" fill="currentColor"/></svg><span>Lumen<br>Atelier</span></span>
+        <span class="cell__cap">Beauty<i class="sq"></i>2025</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-kasbah"><b>Kasbah</b><small>Films<i class="sq"></i>Almería</small></span>
+        <span class="cell__cap">Film<i class="sq"></i>2022</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-duna"><svg viewBox="0 0 46 20" aria-hidden="true"><path d="M2 19.5a21 21 0 0 1 42 0M12 19.5a11 11 0 0 1 22 0" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>duna</span>
+        <span class="cell__cap">Portraits<i class="sq"></i>2021</span>
+      </div>
+      <div class="cell">
+        <span class="logo lg-ultra"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1 13h24a12 12 0 0 1-24 0z" fill="currentColor"/></svg>Ultramar</span>
+        <span class="cell__cap">Campaign<i class="sq"></i>2024</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Journal (light section) -->
+  <section class="journal" id="journal" aria-label="Journal">
+    <div class="journal__head">
+      <h2 class="journal__title d" data-chars>From the journal</h2>
+      <p class="journal__intro" data-reveal>Field notes, set stories and the occasional gear confession. A new entry every few weeks.</p>
+    </div>
+    <ul class="posts" data-stagger>
+      <li><a class="post" href="#journal">
+        <span class="post__date">18.10.2026</span>
+        <span class="post__title d">The first roll is always film</span>
+        <span class="post__ex">Before any digital frame I shoot one roll of 400 speed. It slows the set down and shows me where the light really sits.</span>
+        <span class="post__btn" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1 6h10M6.5 1.5L11 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+      </a></li>
+      <li><a class="post" href="#journal">
+        <span class="post__date">26.08.2026</span>
+        <span class="post__title d">A field guide to desert light</span>
+        <span class="post__ex">Ten summers in Tabernas, condensed: when to shoot, when to wait, and why noon is not the enemy people think it is.</span>
+        <span class="post__btn" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1 6h10M6.5 1.5L11 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+      </a></li>
+      <li><a class="post" href="#journal">
+        <span class="post__date">09.07.2026</span>
+        <span class="post__title d">Casting strangers in Cabo de Gata</span>
+        <span class="post__ex">No agency, no call sheet — just a beach bar, a polaroid and a lot of very patient fishermen.</span>
+        <span class="post__btn" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1 6h10M6.5 1.5L11 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+      </a></li>
+      <li><a class="post" href="#journal">
+        <span class="post__date">22.05.2026</span>
+        <span class="post__title d">Six people, one van, no generator</span>
+        <span class="post__ex">How we shot a full campaign off-grid in four days, and what we would never pack again.</span>
+        <span class="post__btn" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1 6h10M6.5 1.5L11 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+      </a></li>
+      <li><a class="post" href="#journal">
+        <span class="post__date">03.03.2026</span>
+        <span class="post__title d">Winter in Berlin, in twelve frames</span>
+        <span class="post__ex">A personal series made between jobs: grey courtyards, one good coat and the shortest daylight of the year.</span>
+        <span class="post__btn" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1 6h10M6.5 1.5L11 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span>
+      </a></li>
+    </ul>
+  </section>
+
+  <!-- 7 · Closing CTA + footer -->
+  <section class="cta" id="contact" aria-label="Contact">
+    <div class="cta__main">
+      <h2 class="cta__title d" data-chars data-scrub>Let's talk</h2>
+      <div class="cta__row" data-reveal>
+        <a class="link" style="margin-top:0" href="mailto:hola@ortegastudio.es"><span data-roll>Book a shoot</span><svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a>
+        <span class="stone">Almería<i class="sq"></i>Worldwide</span>
+      </div>
+    </div>
+    <footer class="foot" data-reveal data-start="top bottom">
+      <span>© 2026 Rafa Ortega<i class="sq"></i>Almería</span>
+      <ul class="foot__links">
+        <li><a href="mailto:hola@ortegastudio.es"><span data-roll>hola@ortegastudio.es</span></a></li>
+        <li><a href="#contact"><span data-roll>Instagram</span></a></li>
+        <li><a href="#contact"><span data-roll>Vimeo</span></a></li>
+        <li><a href="#contact"><span data-roll>LinkedIn</span></a></li>
+      </ul>
+    </footer>
+  </section>
+
+</main>
+
+
+<script src="lib/gsap.min.js"></script>
+<script src="lib/ScrollTrigger.min.js"></script>
+<script src="lib/lenis.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* Failed images (offline) -> hide, so the gradient fallback shows cleanly */
+  $$('img').forEach(function (img) {
+    var hide = function () { img.style.visibility = 'hidden'; };
+    if (img.complete && !img.naturalWidth) hide();
+    img.addEventListener('error', hide);
+  });
+
+  /* Text roll: label stacked twice inside a one-line mask */
+  $$('[data-roll]').forEach(function (el) {
+    var t = el.textContent;
+    el.textContent = '';
+    var inner = document.createElement('span');
+    inner.className = 'roll__t';
+    inner.setAttribute('data-t', t);
+    inner.textContent = t;
+    el.appendChild(inner);
+    el.classList.add('roll');
+  });
+
+  /* Split text into per-word masks of per-letter spans */
+  function splitChars(el) {
+    var text = el.textContent.trim().replace(/\s+/g, ' ');
+    var host = el.closest('h1,h2,h3') || el;
+    host.setAttribute('aria-label', text);
+    el.textContent = '';
+    var words = text.split(' ');
+    words.forEach(function (word, i) {
+      var w = document.createElement('span');
+      w.className = 'w';
+      w.setAttribute('aria-hidden', 'true');
+      Array.from(word).forEach(function (ch) {
+        var c = document.createElement('span');
+        c.className = 'c';
+        c.textContent = ch;
+        w.appendChild(c);
+      });
+      el.appendChild(w);
+      if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+    });
+    return $$('.c', el);
+  }
+
+  /* Hero headline: fit exactly to the content width */
+  var heroTitle = $('.hero__title');
+  var heroIn = $('.hero__title-in');
+  function fitHero() {
+    heroTitle.style.fontSize = '100px';
+    var w = heroIn.getBoundingClientRect().width;
+    var avail = heroTitle.clientWidth;
+    if (w > 0) heroTitle.style.fontSize = (100 * avail / w * 0.996).toFixed(2) + 'px';
+  }
+
+  /* Place the pill just left of the (blended) nav links */
+  function placePill() {
+    var links = $('.nav__links');
+    var r = links.getBoundingClientRect();
+    root.style.setProperty('--pill-r', Math.round(root.clientWidth - r.left + 28) + 'px');
+  }
+
+  function layout() { fitHero(); placePill(); }
+
+  /* ---------- No GSAP or reduced motion: static, fully usable page ---------- */
+  if (!window.gsap || !window.ScrollTrigger) {
+    root.classList.remove('js');
+    splitChars(heroIn);
+    layout();
+    addEventListener('resize', layout);
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var fontsReady = Promise.race([
+    Promise.all([
+      document.fonts.load('900 100px "Sofia Sans Extra Condensed"'),
+      document.fonts.load('400 12px "Martian Mono"')
+    ]).then(function () { return document.fonts.ready; }),
+    new Promise(function (res) { setTimeout(res, 2500); })
+  ]);
+
+  var heroChars = splitChars(heroIn);
+  var titleSets = $$('[data-chars]').map(function (el) { return { el: el, chars: splitChars(el) }; });
+
+  if (reduce) {
+    fontsReady.then(function () {
+      layout();
+      addEventListener('resize', layout);
+    });
+    $$('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = a.getAttribute('href');
+        var target = id.length > 1 ? $(id) : null;
+        if (id === '#top') { e.preventDefault(); scrollTo(0, 0); }
+        else if (target) { e.preventDefault(); target.scrollIntoView(); }
+      });
+    });
+    return;
+  }
+
+  /* ---------- Lenis smooth scroll wired into ScrollTrigger ---------- */
+  var lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+  window.__lenis = lenis;
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+
+  $$('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href');
+      var target = id === '#top' ? 0 : (id.length > 1 ? $(id) : null);
+      if (target === null) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { duration: 1.5, easing: function (x) { return 1 - Math.pow(1 - x, 4); } });
+    });
+  });
+
+  /* Hidden states before reveal */
+  gsap.set(heroChars, { yPercent: 125 });
+  heroTitle.style.visibility = 'visible';
+  titleSets.forEach(function (s) { gsap.set(s.chars, { yPercent: 125 }); s.el.style.visibility = 'visible'; });
+
+  fontsReady.then(function () {
+    layout();
+    ScrollTrigger.addEventListener('refreshInit', layout);
+
+    /* ---------- Load sequence ---------- */
+    var tl = gsap.timeline({ delay: 0.15 });
+    tl.fromTo('.nav > *, .pill', { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07, clearProps: 'transform' }, 0)
+      .to(heroChars, { yPercent: 0, duration: 1.3, ease: 'expo.out', stagger: 0.04 }, 0.1)
+      .fromTo('.hero__media', { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'expo.inOut' }, 0.25)
+      .fromTo('.hero__media .media__in', { scale: 1.1 }, { scale: 1, duration: 2, ease: 'expo.out' }, 0.45);
+
+    /* ---------- Letter reveals on the giant display titles ---------- */
+    titleSets.forEach(function (s) {
+      if (s.el.hasAttribute('data-scrub')) {
+        // LET'S TALK: letters scrubbed by scroll
+        gsap.to(s.chars, {
+          yPercent: 0, ease: 'power2.out', stagger: 0.12,
+          scrollTrigger: { trigger: s.el, start: 'top 95%', end: 'top 42%', scrub: 1 }
+        });
+      } else {
+        gsap.to(s.chars, {
+          yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.035,
+          scrollTrigger: { trigger: s.el, start: 'top 88%', once: true }
+        });
+      }
+    });
+
+    /* ---------- Framer-style appear (fade + rise + unblur) ---------- */
+    $$('[data-reveal]').forEach(function (el) {
+      gsap.fromTo(el, { opacity: 0, y: 24, filter: 'blur(6px)' }, {
+        opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'expo.out',
+        delay: parseFloat(el.getAttribute('data-delay')) || 0, clearProps: 'transform,filter',
+        scrollTrigger: { trigger: el, start: el.getAttribute('data-start') || 'top 90%', once: true }
+      });
+    });
+    $$('[data-stagger]').forEach(function (group) {
+      gsap.fromTo(group.children, { opacity: 0, y: 24, filter: 'blur(6px)' }, {
+        opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'expo.out', stagger: 0.08,
+        clearProps: 'transform,filter',
+        scrollTrigger: { trigger: group, start: 'top 85%', once: true }
+      });
+    });
+
+    /* ---------- Intro portrait: slow parallax ---------- */
+    gsap.fromTo('.intro__fig', { y: 70 }, {
+      y: -70, ease: 'none',
+      scrollTrigger: { trigger: '.intro', start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+    gsap.fromTo('.intro__media .media__in', { yPercent: -8 }, {
+      yPercent: 8, ease: 'none',
+      scrollTrigger: { trigger: '.intro__media', start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+
+    /* ---------- Giant marquee driven by scroll ---------- */
+    gsap.fromTo('.marquee__track', { xPercent: 0 }, {
+      xPercent: -50, ease: 'none',
+      scrollTrigger: { trigger: '.marquee', start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+
+    ScrollTrigger.refresh();
+  });
+
+  addEventListener('load', function () { ScrollTrigger.refresh(); });
+})();
+</script>
+
+<!-- Switzer Int. top bar -->
+<style>
+@font-face{font-family:"SZ Tight";font-weight:500;src:url(fonts/inter-tight-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"SZ Mono";font-weight:400;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2")}
+.sz-bar{position:fixed;top:0;left:0;right:0;height:28px;z-index:2147483646;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#0E0E0E;color:#EDEAE3;border-bottom:1px solid #2A2A28;font:500 13px/1 "SZ Tight","Inter Tight","Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;mix-blend-mode:normal;pointer-events:auto}
+.sz-bar a{color:#8A8A85;text-decoration:none;font:400 11px/1 "SZ Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.sz-bar a:hover,.sz-bar a:focus-visible{color:#EDEAE3}
+.sz-bar span{text-transform:none !important;font:inherit !important;letter-spacing:inherit !important;color:#EDEAE3 !important}
+</style>
+<div class="sz-bar" role="banner"><span>Switzer Int.</span></div>
+<script>
+(function(){
+  var H = 28;
+  function shift(){
+    document.querySelectorAll('body *').forEach(function(el){
+      if (el.closest('.sz-bar') || el.dataset.szShifted) return;
+      var cs = getComputedStyle(el);
+      if (cs.position !== 'fixed') return;
+      var r = el.getBoundingClientRect();
+      if (r.height > 0 && r.height < 220 && r.top < H) {
+        var t = parseFloat(cs.top); if (isNaN(t)) t = 0;
+        el.style.top = (t + H) + 'px';
+        el.dataset.szShifted = '1';
+      }
+    });
+  }
+  if (document.readyState === 'complete') shift(); else window.addEventListener('load', shift);
+  setTimeout(shift, 1500); setTimeout(shift, 4000);
+})();
+</script>
+</body>
+</html>
