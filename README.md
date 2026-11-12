@@ -7,3 +7,4 @@ Website concepts by Switzer Int. Sàrl, Geneva.
 - /ines-varga
 - /ortega-studio
 - /open-room
+- /verso-editions
