@@ -832,7 +832,7 @@ const FIRST = "2026-08-02";
     const DUR = 5200, t0 = performance.now();
     let k = 0, prev = null;
     function frame(now) {
-      const t = Math.min(1, (now - t0) / DUR), today = Math.floor(t * SPAN);
+      const t = Math.max(0, Math.min(1, (now - t0) / DUR)), today = Math.floor(t * SPAN);
       ticker.textContent = fmtDay(today);
       while (k < EVENTS.length && EVENTS[k][0] <= today) {
         const i = EVENTS[k][1], d = dots[i];
