@@ -8,3 +8,4 @@ Website concepts by Switzer Int. Sàrl, Geneva.
 - /ortega-studio
 - /open-room
 - /verso-editions
+- /switzerland-linkup
